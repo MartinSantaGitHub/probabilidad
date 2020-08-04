@@ -1,0 +1,126 @@
+---
+title: "Tarea 1"
+author: "Martin Santamaria"
+date: "23/7/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+Sys.setenv(RETICULATE_PYTHON = "/Python38")
+library(reticulate)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Librerías
+
+```{r}
+library("gtools")
+```
+
+#### 1. En una carrera en la que participan diez caballos ¿de cuántas maneras diferentes se pueden dar los cuatro primeros lugares?
+
+$V_{n=10}^{k=4}$
+
+```{r}
+v = permutations(10, 4, repeats.allowed = FALSE)
+nrow(v)
+```
+
+#### 2. Una empresa de reciente creación encarga a un diseñador gráfico la elaboración de su logotipo, indicando que ha de seleccionar exactamente tres colores de una lista de seis. ¿Cuántos grupos tiene para elegir el diseñador?
+
+$C_{n=6}^{k=3}$
+
+```{r}
+c = combinations(6, 3, repeats.allowed = FALSE)
+nrow(c)
+```
+
+#### 3. ¿Cuántas palabras diferentes, de cuatro letras, se pueden formar con la palabra byte?
+
+$P_{n=4}$
+
+```{r}
+p = permutations(4, 4, repeats.allowed = FALSE)
+nrow(p)
+
+# También es válido calcularlo como 
+factorial(4)
+```
+
+#### 4. ¿De cuantas maneras diferentes se pueden elegir el director y el subdirector de un departamento formado por 50 miembros?
+
+$V_{n=50}^{k=2}$
+
+```{r}
+v = permutations(50, 2, repeats.allowed = FALSE)
+nrow(v)
+```
+
+#### 5. Con once empleados ¿cuántos comités de empresa de cinco personas se pueden formar?
+
+$C_{n=11}^{k=5}$
+
+```{r}
+c = combinations(11, 5, repeats.allowed = FALSE)
+nrow(c)
+```
+
+#### 6. ¿Cuántas maneras distintas hay de colocar quince libros diferentes en una estantería si queremos que el de Probabilidades esté el primero y el de Estadística en el tercero?
+
+$P_{n=13}$
+
+```{r}
+factorial(13)
+```
+
+#### 7. ¿Cuántos caracteres diferentes podemos formar utilizando a lo sumo a tres símbolos de los utilizados en el alfabeto Morse?
+
+$V_{n=43}^{k=3}$
+
+```{r}
+v = combinations(43, 3, repeats.allowed = FALSE)
+nrow(v)
+```
+
+#### 8. Un supermercado organiza una rifa con un premio de una botella de cava para todas las papeletas que tengan las dos últimas cifras iguales a las correspondientes dos últimas cifras del número premiado en el sorteo de Navidad. Supongamos que todos los décimos tienen cuatro cifras y que existe un único décimo de cada numeración ¿Cuántas botellas repartirá el supermercado?
+
+El supermercado entregará 4000 botellas.
+
+#### 9. ¿Cuántas palabras diferentes podemos formar con todas las letras de la palabra estadística?
+
+Considerando la "i" con tilde como otro caracter, tenemos al conjunto de letras ${e,s,t,a,d,í,i,c}$
+
+$PR_{n=11}^{1,2,2,2,1,1,1,1} = \frac{11!}{(2!)^3(1!)^5}$
+
+```{r}
+factorial(11)/(factorial(2))^3
+```
+
+#### 10. En una tienda de regalos hay relojes de arena con cubetas de colores, y no hay diferencia alguna entre las dos cubetas que forman cada reloj. Si hay cuatro colores posibles y el color de los dos recipientes puede coincidir ¿cuántos modelos de reloj de arena puede ofrecer el establecimiento?
+
+$CR_{n=4}^{k=2}$
+
+```{r}
+cr = combinations(4, 2, repeats.allowed = TRUE)
+nrow(cr)
+```
+
+#### 11. En una partida de parchís gana aquel jugador que consigue alcanzar antes con sus cuatro fichas la llegada. Si hay cuatro jugadores y la partida continua hasta que todos han completado el recorrido ¿cuántos órdenes de llegadas hay para la dieciséis fichas?
+
+$VR_{n=16}^{k=4}$
+
+```{r}
+16^4
+```
+
+#### 12. Se han de repartir cinco becas entre diez españoles y seis extranjeros, de manera que se den tres a españoles y dos a extranjeros ¿De cuántas maneras se puede hacer el reparto?
+
+```{r}
+#a = nrow(combinations(5, 3, repeats.allowed = FALSE))
+#b = nrow(combinations(5, 2, repeats.allowed = FALSE))
+
+a = nrow(combinations(10, 3, repeats.allowed = FALSE))
+b = nrow(combinations(6, 2, repeats.allowed = FALSE))
+
+a * b
+```
