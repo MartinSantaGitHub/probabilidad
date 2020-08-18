@@ -1,0 +1,31 @@
+---
+title: "Discretas"
+author: "Martin Santamaria"
+date: "15/8/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+Sys.setenv(RETICULATE_PYTHON = "/Python38")
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+```
+
+```{python}
+from scipy.stats import binom
+
+m,v = binom.stats(n = 10, p = 0.4, moments = 'mv')
+print(f"E(X) = {m}")
+print(f"VAR(X) = {v}")
+```
+
+```{python}
+from scipy.stats import nbinom
+
+m,v = nbinom.stats(n = 2, p = 0.1, moments = 'mv')
+print(f"E(X) = {m}")
+print(f"VAR(X) = {v}")
+```
+

@@ -1,0 +1,67 @@
+---
+title: "Tarea 8"
+author: "Martin Santamaria"
+date: "17/8/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+Sys.setenv(RETICULATE_PYTHON = "/Python38")
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+```
+
+### Ejercicio 1
+
+$$X \sim B\left(5,\frac{1}{6}\right)$$
+
+- $E(X)$ y $VAR(X)$
+
+```{python}
+from scipy.stats import binom
+
+n = 5
+p = 1/6
+m,v = binom.stats(n = n, p = p, moments = 'mv')
+
+print(f"E(X) = {m}")
+print(f"VAR(X) = {v}")
+```
+
+- $P(1 \le X < 4) = P(1 \le X \le 3) = P(X \le 3) - P(X \le 1)$
+
+```{python}
+binom.cdf(3,n,p) - binom.cdf(1,n,p)
+```
+
+- $P(X \ge 2) = 1 - P(X < 2) = 1 - P(X \le 1)$
+
+```{python}
+1 - binom.cdf(1,n,p)
+```
+
+### Ejercicio 2
+
+Sea $X:$ "Número de USBs defectuosos"
+
+$$X \sim B\left(10,\frac{1}{10}\right)$$
+
+- $P(X = 0)$
+
+```{python}
+n = 10
+p = 1/10
+
+binom.pmf(0,n,p)
+```
+
+- $E(X)$
+
+```{python}
+m = binom.stats(n = n, p = p, moments = 'm')
+
+print(f"E(X) = {m}")
+```
+

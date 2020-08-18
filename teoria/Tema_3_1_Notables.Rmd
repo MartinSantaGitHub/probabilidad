@@ -13,6 +13,7 @@ output:
 
 
 ```{r setup, include=FALSE}
+Sys.setenv(RETICULATE_PYTHON = "/Python38")
 knitr::opts_chunk$set(echo = TRUE, comment = NA)
 library(reticulate)
 ```
