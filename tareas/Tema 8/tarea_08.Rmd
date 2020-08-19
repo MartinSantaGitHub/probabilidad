@@ -65,3 +65,22 @@ m = binom.stats(n = n, p = p, moments = 'm')
 print(f"E(X) = {m}")
 ```
 
+### Ejercicio 6 
+
+El aforo es de 3 coches cada 60 minutos. 
+
+$\lambda \cdot t = 3$ donde $t = 60$ por tanto $\lambda = 0.05$
+
+Tomando $t = 20$ entonces $X \sim Po(1)$
+
+- $P(X = 0)$
+
+```{r}
+dpois(0,1)
+```
+
+- $P(X \ge 2) = 1 - P(X < 2) = 1 - P(X \le 1)$
+
+```{r}
+1 - ppois(1,1)
+```

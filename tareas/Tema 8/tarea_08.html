@@ -429,6 +429,22 @@ binom.pmf(0,n,p)</code></pre>
 print(f&quot;E(X) = {m}&quot;)</code></pre>
 <pre><code>## E(X) = 1.0</code></pre>
 </div>
+<div id="ejercicio-6" class="section level3">
+<h3>Ejercicio 6</h3>
+<p>El aforo es de 3 coches cada 60 minutos.</p>
+<p><span class="math inline">\(\lambda \cdot t = 3\)</span> donde <span class="math inline">\(t = 60\)</span> por tanto <span class="math inline">\(\lambda = 0.05\)</span></p>
+<p>Tomando <span class="math inline">\(t = 20\)</span> entonces <span class="math inline">\(X \sim Po(1)\)</span></p>
+<ul>
+<li><span class="math inline">\(P(X = 0)\)</span></li>
+</ul>
+<pre class="r"><code>dpois(0,1)</code></pre>
+<pre><code>## [1] 0.3678794</code></pre>
+<ul>
+<li><span class="math inline">\(P(X \ge 2) = 1 - P(X &lt; 2) = 1 - P(X \le 1)\)</span></li>
+</ul>
+<pre class="r"><code>1 - ppois(1,1)</code></pre>
+<pre><code>## [1] 0.2642411</code></pre>
+</div>
 
 
 

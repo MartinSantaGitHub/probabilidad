@@ -12,10 +12,13 @@ pbinom(4,n,p, lower.tail = FALSE)
 
 # Geométrica
 
-p = 72/178
+p = 1/2
 
-1 - pgeom(2,p)
-(1 - p)/p
+dgeom(7,p)
+
+((1-p)^(2))*p
+
+p/(1-(1-p)^7)
 
 # Binomial Negativa
 

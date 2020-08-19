@@ -16,7 +16,7 @@ library(reticulate)
 ```{python}
 from scipy.stats import binom
 
-m,v = binom.stats(n = 10, p = 0.4, moments = 'mv')
+m,v = binom.stats(n = 20, p = 0.05, moments = 'mv')
 print(f"E(X) = {m}")
 print(f"VAR(X) = {v}")
 ```
