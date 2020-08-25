@@ -29,3 +29,8 @@ print(f"E(X) = {m}")
 print(f"VAR(X) = {v}")
 ```
 
+```{python}
+from scipy.stats import chi2
+
+chi2.ppf(0.9,1)
+```
