@@ -112,3 +112,249 @@ axis(1,seq(1,9,1))
 
 ### Distribución de Pareto (Power law)
 
+d) y e)
+
+```{r}
+par(mfrow=c(1,2)) # el parametro gamma es a y el parámetro xm es b
+
+curve(extraDistr::dpareto(x,a=3,b=1),col="red",xlim=c(1,15),ylim=c(0,0.1),lty=1,main="Densidad Pareto")
+curve(extraDistr::dpareto(x,a=5,b=1),add=TRUE,col="green",lty=2)
+hist(extraDistr::rpareto(1000,3,1), add = TRUE, freq = FALSE,xlim=c(1,15))
+
+legend("topright",pch=21,legend=c("gamma=3 xm=1","gamma=5 xm=1", "frozen gamma=3 xm=1"),col=c("red","green","black"), bty = "o", lty=c(1,2),cex=0.5)
+
+curve(extraDistr::ppareto(x,a=3,b=1),col="red",xlim=c(1,15),ylim=c(0,1),lty=1,main="Distribución Pareto")
+curve(extraDistr::ppareto(x,a=5,b=1),add=TRUE,col="green",lty=2)
+```
+
+f) En la distribución **power law** se suele denominar la distribución de escala libre debido a que es la unica distribución que es la misma independiente de la escala elegida. Supongamos que tenemos una distribución de probabilidad $p(x)$ para una cantidad $x$ que satisface $p(bx) = g(b)p(x)$ para cualquier valor $b$. O sea, si aumentamos la escala o unidades por el cual medimos $x$ por un factor de $b$, la forma de la distribución $p(x)$ no cambia.  
+
+### Distribución de Gumbel (teoría del valor extremo)
+
+a)
+
+```{r}
+library(latex2exp)
+
+curve(exp(-exp(-x)-x),
+      xlim = c(-5,15),
+      col="darkblue",
+      main=TeX("Función de densidad $Gumbel(\\mu = 0, \\beta = 1)$"))
+```
+
+b) Del punto a) podemos observar que efectivamente $F(x) = e^{-e^{-x}}$ para $x \ge 0$ es la función de distribución de una Gumbel estandar.
+
+c)
+
+```{r}
+library(evd)
+
+loc = 0
+scale = 1 
+
+curve(dgumbel(x,loc = loc, scale = scale),
+      xlim = c(-5,10),
+      col="blue",
+      main="Función de densidad Gumbel")
+
+curve(dgumbel(x,loc = loc + 1, scale = scale),
+      col="green",
+      add = TRUE)
+
+curve(dgumbel(x,loc = loc + 2, scale = scale),
+      col="red",
+      add = TRUE)
+
+curve(dgumbel(x,loc = loc - 2, scale = scale),
+      col="violet",
+      add = TRUE)
+
+legend("topright",
+       legend=c(TeX("$Gumbel(\\mu = 0, \\beta = 1)$"),
+                TeX("$Gumbel(\\mu = 1, \\beta = 1)$"), 
+                TeX("$Gumbel(\\mu = 2, \\beta = 1)$"),
+                TeX("$Gumbel(\\mu = -2, \\beta = 1)$")),
+                col = c("blue","green","red","violet"),
+                lty = c(1,1,1,1),
+                lwd = c(2,2,2,2)
+                )
+
+axis(1,seq(-5,10,1))
+```
+
+Al cambiar $\mu$ lo que ocurre es que se desplaza la gráfica hacia la derecha (o izquierda) dependiendo del signo de $\mu$. Si $\mu > 0$ se desplaza hacia la derecha, y si $\mu < 0$ se deplaza hacia la izquierda.
+
+d)
+
+```{r}
+library(evd)
+
+loc = 0
+scale = 1 
+
+curve(dgumbel(x,loc = loc, scale = scale),
+      xlim = c(-5,10),
+      col="blue",
+      main="Función de densidad Gumbel")
+
+curve(dgumbel(x,loc = loc, scale = scale + 1),
+      col="green",
+      add = TRUE)
+
+curve(dgumbel(x,loc = loc, scale = scale + 2),
+      col="red",
+      add = TRUE)
+
+curve(dgumbel(x,loc = loc, scale = scale + 3),
+      col="violet",
+      add = TRUE)
+
+legend("topright",
+       legend=c(TeX("$Gumbel(\\mu = 0, \\beta = 1)$"),
+                TeX("$Gumbel(\\mu = 0, \\beta = 2)$"), 
+                TeX("$Gumbel(\\mu = 0, \\beta = 3)$"),
+                TeX("$Gumbel(\\mu = 0, \\beta = 4)$")),
+                col = c("blue","green","red","violet"),
+                lty = c(1,1,1,1),
+                lwd = c(2,2,2,2)
+                )
+
+axis(1,seq(-5,10,1))
+```
+
+Al variar $\beta$ se modifica el índice de curtosis. Esto es, los valores se encuentran más próximos o más alejados de la media con lo que la curva toma una forma con más punta o bien más aplanada. Con valores bajos de $\beta$ cercanos a cero, la curva es más puntiaguda mientras que para valores altos tiene forma más llana.
+
+e)
+
+Sea $X$ una v.a. con distribución $Gumbel(\mu, \beta)$
+
+$$E(X) = \mu \ + \ \beta \gamma$$
+
+donde $\gamma$ es la constante de Euler cuyo valor es 0.5772157.
+
+Asi nos quedaría 
+
+$$E(X) = \mu \ + \ (0.5772157)\beta$$
+
+La varianza es
+
+$$Var(X) = \frac{\pi^2}{6}\beta^2$$
+
+```{r}
+# Esperanza
+mgumbel = function(loc,scale){
+  loc + (-digamma(1)*scale);
+}
+
+# Varianza
+vgumbel = function(scale){
+  ((pi^2)/(6))*scale^2;
+}
+```
+
+f)
+
+#### En `Python`
+
+c) y d)
+
+```{python}
+from scipy.stats import gumbel_r
+import numpy as np
+import matplotlib.pyplot as plt
+
+loc = 0
+scale = 1
+
+fig, ax = plt.subplots(1,1)
+x = np.linspace(-5,10,100)
+
+ax.plot(x, gumbel_r.pdf(x,loc,scale), 'b-', lw = 1, alpha = 0.7, label = "Gumbel(0,1)")
+ax.plot(x, gumbel_r.pdf(x,loc + 1,scale), 'g-', lw = 1, alpha = 0.7, label = "Gumbel(1,1)")
+ax.plot(x, gumbel_r.pdf(x,loc + 2,scale), 'r-', lw = 1, alpha = 0.7, label = "Gumbel(2,1)")
+ax.plot(x, gumbel_r.pdf(x,loc - 2,scale), color='violet', ls = '-', lw = 1, alpha = 0.7, label = "Gumbel(-2,1)")
+
+ax.legend(loc = "best", frameon= False)
+
+plt.xticks(np.arange(-5,11,1))
+
+plt.show()
+```
+
+```{python}
+fig, ax = plt.subplots(1,1)
+x = np.linspace(-5,10,100)
+
+ax.plot(x, gumbel_r.pdf(x,loc,scale), 'b-', lw = 1, alpha = 0.7, label = "Gumbel(0,1)")
+ax.plot(x, gumbel_r.pdf(x,loc,scale + 1), 'g-', lw = 1, alpha = 0.7, label = "Gumbel(0,2)")
+ax.plot(x, gumbel_r.pdf(x,loc,scale + 2), 'r-', lw = 1, alpha = 0.7, label = "Gumbel(0,3)")
+ax.plot(x, gumbel_r.pdf(x,loc,scale + 3), color='violet', ls = '-', lw = 1, alpha = 0.7, label = "Gumbel(0,4)")
+
+ax.legend(loc = "best", frameon= False)
+
+plt.xticks(np.arange(-5,11,1))
+
+plt.show()
+```
+
+Verifiquemos las fórmulas de la esperanza y la varianza del apartado e)
+
+$$X \sim Gumbel(0,1)$$
+
+```{python}
+m,v = gumbel_r.stats(loc = 0, scale = 1, moments = 'mv')
+
+print(f"E(X) = {m}")
+print(f"VAR(X) = {v}")
+```
+
+Con las fórmulas
+
+```{r}
+m = mgumbel(0,1)
+v = vgumbel(1)
+```
+
+$E(X) =$ `r m`
+
+$Var(X) =$ `r v`
+
+$$Y \sim Gumbel(2,3)$$
+
+```{python}
+m,v = gumbel_r.stats(loc = 2, scale = 3, moments = 'mv')
+
+print(f"E(Y) = {m}")
+print(f"VAR(Y) = {v}")
+```
+
+Con las fórmulas
+
+```{r}
+m = mgumbel(2,3)
+v = vgumbel(3)
+```
+
+$E(Y) =$ `r m`
+
+$Var(Y) =$ `r v`
+
+$$Z \sim Gumbel(-2,4)$$
+
+```{python}
+m,v = gumbel_r.stats(loc = -2, scale = 4, moments = 'mv')
+
+print(f"E(Z) = {m}")
+print(f"VAR(Z) = {v}")
+```
+
+Con las fórmulas
+
+```{r}
+m = mgumbel(-2,4)
+v = vgumbel(4)
+```
+
+$E(Z) =$ `r m`
+
+$Var(Z) =$ `r v`
