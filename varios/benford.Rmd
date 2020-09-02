@@ -16,6 +16,5 @@ data = c(1,1,3,5,2,10,3,11,11,9,14,19,31,30,67,41,36,36,86,117,87,101,55,75,146,
 
 bd <- benford(data = data, number.of.digits = 1)
 
-plot(bd,except=c("summation","mantissa","chi squared","abs diff","ex summation"))
+plot(bd,except=c("second order", "summation","mantissa","chi squared","abs diff","ex summation"))
 ```
-
