@@ -1,0 +1,159 @@
+---
+title: "Tarea 13"
+author: "Martin Santamaria"
+date: "3/9/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Ejercicio 3
+
+```{r}
+Fx = function(x){
+  (-(x^2)/2)+x+(1/2)
+}
+
+curve(Fx(x),
+      ylim = c(-2,1.5),
+      xlim = c(-2,2),
+      xlab = "x",
+      col = 'blue',
+      lwd = 2,
+      xaxt = 'n',
+      main = "Función de distribución")
+
+abline(v=0)
+
+points(c(1,1),c(1,0), type='l', col = 'red', lwd = 2)
+points(c(-1,-1),c(-1,0), type='l', col = 'red', lwd = 2)
+
+axis(1, pos=0)
+```
+
+#### **Método de transformación**
+
+Para observar un mejor ajuste de la curva de densidad con el histograma generado de la muestra, en vez de n = 100 voy a tomar n = 1000. 
+
+```{r}
+f_den = function(x){
+  sapply(x,function(x){
+    if(x >= -1 && x <= 0){
+      1 + x;
+    }else if(x > 0 && x <= 1){
+      1 - x;
+    }else{
+      0;
+    }
+    });
+}
+
+Fx_inv = function(x){
+  sapply(x,function(x){
+      1 - sqrt((2-2*x));
+    });
+}
+
+n=1000
+muestra.y = runif(n)
+muestra.x = Fx_inv(muestra.y)
+hist(muestra.x, freq = FALSE, main = "Histograma de la muestra", xlim = c(0,1), ylab = 'frecuencias relativas')
+curve(f_den(x),
+      xlab = "x",
+      col = 'red',
+      main = "Función de densidad",
+      lwd = 1.5,
+      add = TRUE)
+```
+
+#### **Método de rechazo**
+
+```{r}
+a=-1; b=1; c=0; d=1.2; n=1000; i=1;
+muestra=c()
+
+while(i <=n){
+  x=runif(1,a,b)
+  y=runif(1,c,d)
+  if(y <= f_den(x)){muestra=c(muestra,x); i=i+1}
+}
+hist(muestra, freq = FALSE, main = "Histograma de la muestra", ylim = c(0,1.2), ylab = 'frecuencias relativas')
+curve(f_den(x),
+      xlab = "x",
+      col = 'red',
+      main = "Función de densidad",
+      lwd = 1.5,
+      add = TRUE)
+```
+
+### Ejercicio 4
+
+La función de distribución de $Y$ es:
+
+$$
+F_Y(t)=
+\left\{\begin{array}{ll}
+0, & \mbox{si $t<0$},\\
+\sqrt{t}, & \mbox{si $0\leq t\leq 1$},\\ 1, &
+\mbox{si $t>1$},
+\end{array}\right.
+$$
+
+Como sabemos $\sqrt{t}$ es continua y creciente $\forall \ t \in [0,1]$
+
+Su inversa es $t = y^2 = F_Y^{-1}(y) \ \ \ \forall \ y \in [0,1]$
+
+#### **Método de transformación**
+
+Para observar un mejor ajuste de la curva de densidad con el histograma generado de la muestra, en vez de n = 100 voy a tomar n = 1000. 
+
+```{r}
+f_den = function(x){
+  sapply(x,function(x){
+    if(x > 0 && x <= 1){
+      1/(2*sqrt(x))
+    }else{
+      0;
+    }
+    });
+}
+
+Fy_inv = function(x){
+  sapply(x,function(x){
+      x^2;
+    });
+}
+
+n=1000
+muestra.y = runif(n)
+muestra.x = Fy_inv(muestra.y)
+hist(muestra.x, freq = FALSE, main = "Histograma de la muestra", xlim = c(0.01,1), ylab = 'frecuencias relativas')
+curve(f_den(x),
+      xlab = "x",
+      col = 'red',
+      main = "Función de densidad",
+      lwd = 1.5,
+      add = TRUE)
+```
+
+#### **Método de rechazo**
+
+```{r}
+a=0; b=1; c=0; d=3; n=1000; i=1;
+muestra=c()
+
+while(i <=n){
+  x=runif(1,a,b)
+  y=runif(1,c,d)
+  if(y <= f_den(x)){muestra=c(muestra,x); i=i+1}
+}
+hist(muestra, freq = FALSE, main = "Histograma de la muestra", xlim = c(0.01,1), ylim = c(0,3), ylab = 'frecuencias relativas')
+curve(f_den(x),
+      xlab = "x",
+      col = 'red',
+      main = "Función de densidad", 
+      lwd = 1.5,
+      add = TRUE)
+```
