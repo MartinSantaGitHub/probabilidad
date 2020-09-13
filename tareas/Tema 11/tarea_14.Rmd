@@ -1,0 +1,149 @@
+---
+title: "Tarea 14"
+author: "Martin Santamaria"
+date: "12/9/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Ejercicio 1
+
+$X:$ "Suma de los números obenidos"
+
+$Y:$ "Resta de los números obenidos"
+
+- Función de probabilidad conjunta $P_{XY}(x,y)$
+
+```{r}
+n = 2
+
+Dxy=data.frame(m1 = rep(1:n,each=n), m2 = rep(1:n,times=n))
+Dxy$suma=Dxy$m1 + Dxy$m2
+Dxy$resta=Dxy$m1 - Dxy$m2
+  
+(tabla.func.prob.conjunta = prop.table(table(Dxy$suma, Dxy$resta)))
+```
+
+- Marginal $P_X(x)$
+
+```{r}
+(prob.marginal.suma = apply(tabla.func.prob.conjunta,1,sum))
+```
+
+- Marginal $P_Y(y)$
+
+```{r}
+(prob.marginal.resta = apply(tabla.func.prob.conjunta,2,sum))
+```
+
+### Ejercicio 2
+
+$X:$ "Número que sale la primera vez"
+
+$Y:$ "Número que sale la segunda vez"
+
+- Función de probabilidad conjunta $P_{XY}(x,y)$
+
+```{r}
+n = 2
+
+Dxy=data.frame(x = rep(c("+1","-1"),each=n), y = rep(c("+1","-1"),times=n))
+
+(tabla.func.prob.conjunta = prop.table(table(Dxy)))
+```
+
+- $E(X)$
+
+```{r}
+prob.marginal.primera = apply(tabla.func.prob.conjunta,1,sum)
+valores.primera = as.integer(rownames(tabla.func.prob.conjunta))
+(valor.esperado.primera = sum(valores.primera*prob.marginal.primera))
+```
+
+- $E(Y)$
+
+```{r}
+prob.marginal.segunda = apply(tabla.func.prob.conjunta,2,sum)
+valores.segunda = as.integer(colnames(tabla.func.prob.conjunta))
+(valor.esperado.segunda = sum(valores.segunda*prob.marginal.segunda))
+```
+
+- $E\left(\frac{X}{Y}\right)$
+
+```{r}
+division.valores = outer(valores.primera,valores.segunda,"/")
+(valor.esperado.division = sum(division.valores*tabla.func.prob.conjunta))
+```
+
+### Ejercicio 3
+
+Se lanza $3$ veces una moneda equilibrada.
+
+$X:$ "Número de caras"
+
+$Y:$ "Número de cruces"
+
+- Función de probabilidad conjunta $P_{XY}(x,y)$
+
+```{r}
+n = 3
+
+Dxy=data.frame(caras = rep(0:n), cruces = rep(n:0))
+
+(tabla.func.prob.conjunta = prop.table(table(Dxy)))
+```
+
+- $\sigma_{XY}=E(XY)-E(X)\cdot E(Y)$
+
+```{r}
+prob.marginal.caras = apply(tabla.func.prob.conjunta,1,sum)
+valores.caras = as.integer(rownames(tabla.func.prob.conjunta))
+valor.esperado.caras = sum(valores.caras*prob.marginal.caras)
+
+prob.marginal.cruces = apply(tabla.func.prob.conjunta,2,sum)
+valores.cruces = as.integer(colnames(tabla.func.prob.conjunta))
+valor.esperado.cruces = sum(valores.cruces*prob.marginal.cruces)
+
+producto.valores = outer(valores.caras,valores.cruces,"*")
+valor.esperado.producto = sum(producto.valores*tabla.func.prob.conjunta)
+
+(cov_xy = valor.esperado.producto - (valor.esperado.caras * valor.esperado.cruces))
+```
+
+### Ejercicio 4
+
+$\begin{array}{rl} P_X(x)  & = \sum_{y=1}^n P_{XY}(x,y),\  x=1,2,\ldots,n\\P_Y(y) &  =\sum_{x=1}^nP_{XY}(x,y),\ \ y=1,2,\ldots,n\end{array}$
+
+Sustituyendo y reemplazando nos queda 
+
+$P_X(x) = \frac{1}{n^2} \cdot n = \frac{1}{n}$
+
+$P_Y(y) = \frac{1}{n^2} \cdot n = \frac{1}{n}$
+
+Comprobamos que 
+
+$\frac{1}{n^2} = P_{XY}(x,y) = P_X(x) \cdot P_Y(y) = \frac{1}{n} \cdot \frac{1}{n}$
+
+para $x=1,2,\ldots,n, \ \ \ \ y=1,2,\ldots,n$
+
+Con lo cual $X$ e $Y$ son independientes.
+
+### Ejercicio 6
+
+$E(Y|X=1)$
+
+```{r}
+tabla.func.prob.conjunta = table(y = rep(-1:1), x = rep(-1:1))
+tabla.func.prob.conjunta[1,] = c(1/9,1/18,1/9)
+tabla.func.prob.conjunta[2,] = c(1/9,1/9,1/18)
+tabla.func.prob.conjunta[3,] = c(2/9,0,2/9)
+
+valores.Y = as.integer(rownames(tabla.func.prob.conjunta))
+
+prob.cond.x1 = tabla.func.prob.conjunta[,colnames(tabla.func.prob.conjunta) == 1] / sum(tabla.func.prob.conjunta[,colnames(tabla.func.prob.conjunta) == 1])
+
+(valor.esperado.cond.x1 = sum(valores.Y*prob.cond.x1))
+```

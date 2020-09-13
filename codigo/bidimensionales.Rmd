@@ -17,11 +17,88 @@ pdado =function(x,n=6)  sapply(x,FUN=function(x)
 
 pdado2 =function(x,y,n=6) {pdado(x,n)*pdado(y,n)}
 
-psum_prod=function(x,y,n=6){
+func.prob.conj = function(x,y,n=6){
   Dxy=data.frame(d1=rep(1:n,each=n),d2=rep(1:n,times=n))
-  Dxy$suma=Dxy$d1+Dxy$d2
-  Dxy$producto=Dxy$d1*Dxy$d2
-  aux=Dxy[Dxy$suma<=x& Dxy$producto<=y,]
-  sum(apply(aux[,1:2],FUN=function(x) {pdado2(x[1],x[2],n=n)},1 ))
+  Dxy$suma=Dxy$d1 + Dxy$d2
+  Dxy$producto=Dxy$d1 * Dxy$d2
+  aux=Dxy[Dxy$suma == x & Dxy$producto == y,]
+  sum(apply(aux[,1:2],FUN=function(x) {pdado2(x[1],x[2],n=n)},1))
 }
+
+func.dist.conj = function(x,y,n=6){
+  Dxy=data.frame(d1=rep(1:n,each=n),d2=rep(1:n,times=n))
+  Dxy$suma=Dxy$d1 + Dxy$d2
+  Dxy$producto=Dxy$d1 * Dxy$d2
+  tabla.func.prob.conjunta=prop.table(table(Dxy$suma,Dxy$producto))
+  sum(tabla.func.prob.conjunta[as.integer(rownames(tabla.func.prob.conjunta)) <= x,
+                               as.integer(colnames(tabla.func.prob.conjunta)) <= y])
+}
+
+Dxy=data.frame(d1=rep(1:n,each=n),d2=rep(1:n,times=n))
+  Dxy$suma=Dxy$d1 + Dxy$d2
+  Dxy$producto=Dxy$d1 * Dxy$d2
+  tabla.func.prob.conjunta=prop.table(table(Dxy$suma,Dxy$producto))
+  
+marginal.suma = apply(tabla.func.prob.conjunta,1,sum)
+marginal.producto = apply(tabla.func.prob.conjunta,2,sum)
+```
+
+```{r}
+library(bivariate)
+f = nbvpdf (0, 0, 1, 1, 0.01)
+plot(f,TRUE)
+```
+
+```{r}
+tabla.ind.teor =  marginal.suma%*%t(marginal.producto)
+tabla.ind.teor = as.data.frame(tabla.ind.teor)
+rownames(tabla.ind.teor)=rownames(tabla.func.prob.conjunta)
+colnames(tabla.ind.teor)=colnames(tabla.func.prob.conjunta)
+```
+
+```{r}
+valores.suma = as.integer(rownames(tabla.func.prob.conjunta))
+valores.producto = as.integer(colnames(tabla.func.prob.conjunta))
+suma.valores = outer(valores.suma,valores.producto,"+")
+valor.esperado.suma = sum(suma.valores*tabla.func.prob.conjunta)
+```
+
+```{r}
+prob.cond.p12=tabla.func.prob.conjunta[,valores.producto==12]/
+  sum(tabla.func.prob.conjunta[,valores.producto==12])
+(prob.cond.p12.buena = prob.cond.p12[prob.cond.p12!=0])
+```
+
+```{r}
+prob.cond.s8=tabla.func.prob.conjunta[valores.suma==8,]/
+  sum(tabla.func.prob.conjunta[valores.suma==8,])
+(prob.cond.s8.buena = prob.cond.s8[prob.cond.s8!=0])
+```
+
+```{r}
+valores.cond.s8=as.integer(names(prob.cond.s8.buena))
+sum(valores.cond.s8*prob.cond.s8.buena)
+```
+
+```{r}
+g=function(x,y){x^2+y^2}  # definimos la función g
+sort(unique(as.vector(outer(1:6,1:6,g))))
+```
+
+```{r}
+valores.variable.Z = sort(unique(as.vector(outer(1:6,1:6,g))))  
+matriz.valores = outer(1:6,1:6,g) # aplicamos la función g a 
+#  todas las parejas (i,j), i,j=1,2,3,4,5,6
+frecuencias = c()  # vector donde guardaremos las frecuencias de los valores de Z
+for (i in 1:length(valores.variable.Z)){
+  z=valores.variable.Z[i]
+  frecuencias=c(frecuencias,length(matriz.valores[matriz.valores==z]))
+}
+frecuencias
+```
+
+```{r}
+funcion.probabilidad.Z=data.frame(rbind(valores.variable.Z,round(frecuencias/36,3)))
+rownames(funcion.probabilidad.Z)=c("Z","P_Z")
+funcion.probabilidad.Z
 ```
