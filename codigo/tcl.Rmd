@@ -1,0 +1,51 @@
+---
+title: "TCL"
+author: "Martin Santamaria"
+date: "8/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+N=100
+k=500
+set.seed(2019) # fijamos la semila de aleatoriedad para que a todos nos dé lo mismo
+valores.experimento=matrix(sample(c(0,1),N*k,replace=TRUE),k,N)
+
+calculo.xnbarra = function(x){
+  return(cumsum(x)/(1:length(x)))
+}
+
+matriz.medias.muestrales = t(apply(valores.experimento,1,calculo.xnbarra))
+
+epsilon=0.1
+probabilidades.pn= colSums(abs(matriz.medias.muestrales-0.5) > epsilon)/k
+
+plot(1:N,probabilidades.pn,type="l",xlab=expression(N),ylab=expression(p[n]),col="red")
+```
+
+```{r}
+n = 100
+p = 1/2
+sigma = p*(1-p)
+
+set.seed(2019)
+
+muestra.binomial = rbinom(1000,n,p)
+muestra.xnbarra = muestra.binomial/n
+
+hist(muestra.xnbarra,freq=FALSE,
+     breaks=seq(from=min(muestra.xnbarra)-0.1,to=max(muestra.xnbarra)+0.1,by=0.01),
+     main="Histograma de la distribución de las medias muestrales",
+     xlab="valores variable",
+     ylab="frecuencias relativas")
+
+mu = p
+sigma.xnbarra = sqrt(p*(1-p)/n)
+x = seq(from=min(muestra.xnbarra),to=max(muestra.xnbarra),by=0.01)
+
+lines(x,dnorm(x,mu,sigma.xnbarra),col='red')
+```

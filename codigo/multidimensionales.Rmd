@@ -1,0 +1,131 @@
+---
+title: "Multidimensionales"
+author: "Martin Santamaria"
+date: "29/9/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+f.dist.con = function(x1,x2,x3){ifelse(x1<0 | x2<0 | x3 <0,0,
+          ifelse(x1>=0 & x1<=1 & x2>=0 & x2<=1 & x3>=0 & x3<=1,x1^2*x2^2*x3^2,
+          ifelse(x1>1 & x2>=0 & x2<=1 & x3>=0 & x3<=1,x2^2*x3^2,
+          ifelse(x1>=0 & x1<=1 & x2>1 & x3>=0 & x3<=1,x1^2*x3^2,
+          ifelse(x1>=0 & x1<=1 & x2>=0 & x2<=1 & x3>1,x1^2*x2^2,
+          ifelse(x1>=0 & x1<=1 & x2 >1 & x3 >1,x1^2,
+          ifelse(x1>1 & x2 >=0 & x2<=1 & x3 >1,x2^2,
+          ifelse(x1>=0 & x1<=1 & x2>=0 & x2<=1 & x3 >1,x3^2,1))))))))}
+x1=seq(from=-1,to=3,by=0.05)
+x2=seq(from=-1,to=3,by=0.05)
+curva.nivel.0=outer(x1,x2,f.dist.con,x3=0)
+curva.nivel.0.5=outer(x1,x2,f.dist.con,x3=0.5)
+curva.nivel.1=outer(x1,x2,f.dist.con,x3=1)
+curva.nivel.1.5=outer(x1,x2,f.dist.con,x3=1.5)
+image(x1,x2,curva.nivel.0)
+image(x1,x2,curva.nivel.0.5)
+image(x1,x2,curva.nivel.1)
+image(x1,x2,curva.nivel.1.5)
+```
+
+```{r}
+fun.prob.con=function(x1,x2,x3){
+  n=6
+  cuenta.1 =function(x){length(x[x==1])}
+  cuenta.2 =function(x){length(x[x==2])}
+  cuenta.3 =function(x){length(x[x==3])}
+  Dxyz=data.frame(d1=rep(1:n,each=n),d2=rep(1:n,times=n),d3=rep(1:n,each=n*n))
+  X1=apply(Dxyz,1,cuenta.1)
+  X2=apply(Dxyz,1,cuenta.2)
+  X3=apply(Dxyz,1,cuenta.3)
+  frecuencia = table(X1==x1 & X2==x2 & X3==x3)
+  res=ifelse(length(frecuencia)==2,frecuencia[2],0)
+  return(res/6^3)
+}
+```
+
+```{r}
+valores.variables=0:3
+tabla.0 = c()
+for (i in 1:length(valores.variables)){for (j in 1:length(valores.variables)){
+  tabla.0=c(tabla.0,fun.prob.con(valores.variables[i],valores.variables[j],0));
+}}
+tabla.0 = matrix(tabla.0,length(valores.variables),length(valores.variables))
+rownames(tabla.0)=valores.variables
+colnames(tabla.0)=valores.variables
+knitr::kable(tabla.0)
+```
+
+```{r}
+fun.dis.con = function(x1,x2,x3){
+  suma=0
+  i1=0; i2=0; i3=0;
+  while(i1 <=x1 & i1<=3){
+    while(i2 <= x2 & i2<=3){
+      while(i3<= x3 & i3 <=3){
+        suma=suma+fun.prob.con(i1,i2,i3); i3=i3+1;
+      }
+      i3=0; i2=i2+1;
+    }
+    i2=0; i3=0; i1=i1+1;
+  }
+  return(suma)
+}
+```
+
+```{r}
+fun.marginal.X1 = function(x){
+  suma=0;
+  for (i in 0:3){for (j in 0:3){suma=suma+fun.prob.con(x,i,j)}}
+  return(suma)
+}
+tabla.fun.marginal.X1=data.frame(fun.marginal.X1(0),fun.marginal.X1(1),
+                                 fun.marginal.X1(2),fun.marginal.X1(3));
+colnames(tabla.fun.marginal.X1) = 0:3
+knitr::kable(tabla.fun.marginal.X1)
+```
+
+```{r}
+fun.marginal.X1.X2 = function(x,y){
+  suma=0;
+  for (i in 0:3){suma=suma+fun.prob.con(x,y,i)}
+  return(suma)
+}
+tabla.fun.marginal.X1.X2=c()
+for (i in 0:3){
+  tabla.fun.marginal.X1.X2=cbind(tabla.fun.marginal.X1.X2,c(fun.marginal.X1.X2(i,0),
+                                                            fun.marginal.X1.X2(i,1),
+                                                            fun.marginal.X1.X2(i,2),
+                                                            fun.marginal.X1.X2(i,3)))}
+tabla.fun.marginal.X1.X2=as.data.frame(tabla.fun.marginal.X1.X2)
+rownames(tabla.fun.marginal.X1.X2)=0:3
+colnames(tabla.fun.marginal.X1.X2)=0:3
+knitr::kable(tabla.fun.marginal.X1.X2)
+```
+
+```{r}
+valor.esperado=0;
+
+for (i1 in 0:3){
+  for (i2 in 0:3){
+    for (i3 in 0:3){
+      valor.esperado=valor.esperado+(i1*i2*i3)*fun.prob.con(i1,i2,i3)
+    }
+  }
+}
+
+valor.esperado
+```
+
+```{r}
+esperanza.X1=0
+
+for (i in 0:3){
+  esperanza.X1=esperanza.X1+i*fun.marginal.X1(i)
+}
+
+esperanza.X1
+```
+

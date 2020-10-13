@@ -1,0 +1,146 @@
+---
+title: "Tarea 21"
+author: "Martin Santamaria"
+date: "8/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Ejercicio 1
+
+#### Convergencia en probabilidad
+
+```{r}
+N = 100
+k = 500
+m = 10
+p = 1/2
+
+set.seed(2020)
+
+valores.experimento=matrix(rbinom(N*k,m,p),k,N)
+
+calculo.xnbarra = function(x){
+  return(cumsum(x)/(1:length(x)))
+}
+
+matriz.medias.muestrales = t(apply(valores.experimento,1,calculo.xnbarra))
+
+epsilon = 0.05
+probabilidades.pn= colSums(abs(matriz.medias.muestrales-(m*p)) > epsilon)/k
+
+plot(1:N,probabilidades.pn,type="l",xlab=expression(N),ylab=expression(p[n]),col="red")
+```
+
+Los parámetros $\epsilon$, $p$ y $m$ en su conjunto, modifican la curva pero siempre manteniendo la misma forma general. En particular el valor de $\epsilon$ debe ser pequeño ya que un valor, supongamos mayor a 1, no nos permitirá apreciar de manera marcada la descendencia de la curva para los diferentes valores de $N$. Por el contrario, el valor $m$ es como hacerle un zoom a la curva. Si aumentamos $m$ deberíamos aumentar $N$ también para mantener la misma proporción de la curva. Nos queda el valor de $p$. Dicho valor no afecta demasiado la curva. Lo que se modifica son los picos de la gráfica a medida que desciende la curva pero no más que eso. La curva sigue siendo siempre la misma.
+
+A continuación, algunos valores de ejemplo:
+
+$\epsilon = 0.5$
+
+```{r}
+epsilon = 0.5
+probabilidades.pn= colSums(abs(matriz.medias.muestrales-(m*p)) > epsilon)/k
+
+plot(1:N,probabilidades.pn,type="l",xlab=expression(N),ylab=expression(p[n]),col="red")
+```
+
+$m = 100$
+
+```{r}
+m = 100
+
+valores.experimento=matrix(rbinom(N*k,m,p),k,N)
+
+matriz.medias.muestrales = t(apply(valores.experimento,1,calculo.xnbarra))
+
+epsilon = 0.05
+probabilidades.pn= colSums(abs(matriz.medias.muestrales-(m*p)) > epsilon)/k
+
+plot(1:N,probabilidades.pn,type="l",xlab=expression(N),ylab=expression(p[n]),col="red")
+```
+
+$p = \frac{2}{5}$
+
+```{r}
+m = 10
+p = 2/5
+
+valores.experimento=matrix(rbinom(N*k,m,p),k,N)
+
+matriz.medias.muestrales = t(apply(valores.experimento,1,calculo.xnbarra))
+
+epsilon = 0.05
+probabilidades.pn= colSums(abs(matriz.medias.muestrales-(m*p)) > epsilon)/k
+
+plot(1:N,probabilidades.pn,type="l",xlab=expression(N),ylab=expression(p[n]),col="red")
+```
+
+#### Convergencia casi segura
+
+```{r}
+N = 9000
+k = 15000
+p = 1/2
+
+valores.experimento=matrix(rbinom(N*k,m,p),k,N)
+
+matriz.medias.muestrales = t(apply(valores.experimento,1,calculo.xnbarra))
+
+probabilidades.pn= colSums(abs(matriz.medias.muestrales-(m*p)) > epsilon)/k
+
+plot(1:N,cumsum(probabilidades.pn),xlab=expression(n), ylab="Sumas parciales",col='red', type='l')
+```
+
+Debido a las limitaciones de mi maquina, los valores máximos que pude poner para $N$ y para $k$ fueron $N = 9000$ y $k = 15000$. Con valores mayores, cuando intenta procesar los cálculos arroja un error de falta de memoria, lo cual es lógico dada la cantidad de calculos y el tamaño del vector de probabilidades que intenta almacenar. Aun así, se puede observar en el gráfico que las sumas parciales convergen.
+
+### Ejercicio 2
+
+#### Convergencia en probabilidad
+
+```{r}
+N = 100
+k = 500
+lambda = 2
+
+valores.experimento=matrix(rexp(N*k,lambda),k,N)
+
+matriz.medias.muestrales = t(apply(valores.experimento,1,calculo.xnbarra))
+
+probabilidades.pn= colSums(abs(matriz.medias.muestrales-(1/lambda)) > epsilon)/k
+
+plot(1:N,probabilidades.pn,type="l",xlab=expression(N),ylab=expression(p[n]),col="blue")
+```
+
+Si aumentamos el valor de $\lambda$ veremos una pronta caida de la curva al inicio del tamaño de la muestra, o mejor dicho, para valores bajos del tamaño de la curva.
+
+```{r}
+lambda = 15
+
+valores.experimento=matrix(rexp(N*k,lambda),k,N)
+
+matriz.medias.muestrales = t(apply(valores.experimento,1,calculo.xnbarra))
+
+probabilidades.pn= colSums(abs(matriz.medias.muestrales-(1/lambda)) > epsilon)/k
+
+plot(1:N,probabilidades.pn,type="l",xlab=expression(N),ylab=expression(p[n]),col="blue")
+```
+
+#### Convergencia casi segura
+
+```{r}
+N = 5000
+k = 5000
+lambda = 2
+
+valores.experimento=matrix(rexp(N*k,lambda),k,N)
+
+matriz.medias.muestrales = t(apply(valores.experimento,1,calculo.xnbarra))
+
+probabilidades.pn= colSums(abs(matriz.medias.muestrales-(1/lambda)) > epsilon)/k
+
+plot(1:N,cumsum(probabilidades.pn),xlab=expression(n), ylab="Sumas parciales",col='red', type='l')
+```
